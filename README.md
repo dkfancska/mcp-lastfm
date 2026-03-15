@@ -2,34 +2,85 @@
 
 MCP server for the [Last.fm API](https://www.last.fm/api). Enables LLM agents to access music data: user profiles, listening history, top charts, search, and artist/album/track metadata.
 
-## Requirements
+## Prerequisites
 
 - Python 3.10+
 - [Last.fm API key](https://www.last.fm/api/account/create) (free)
 
 ## Installation
 
+### Using uv (recommended)
+
+No installation required — runs directly:
+
 ```bash
-pip install -e .
+uv run --with lastfm-mcp --python 3.10 lastfm-mcp
+```
+
+### Using pip
+
+```bash
+pip install lastfm-mcp
+```
+
+Then run:
+
+```bash
+lastfm-mcp
 ```
 
 ## Configuration
 
-Set your API key as an environment variable:
-
-```bash
-export LASTFM_API_KEY="your_api_key"
-```
-
 ### Claude Desktop
 
-Add to `claude_desktop_config.json`:
+Add to your `claude_desktop_config.json`:
+
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- Windows: `%APPDATA%/Claude/claude_desktop_config.json`
+
+#### Using uv
+
+```json
+{
+  "mcpServers": {
+    "lastfm": {
+      "command": "uv",
+      "args": ["run", "--with", "lastfm-mcp", "--python", "3.10", "lastfm-mcp"],
+      "env": {
+        "LASTFM_API_KEY": "your_api_key"
+      }
+    }
+  }
+}
+```
+
+> **Note:** You may need to replace `uv` with the full path to the executable. Find it with `which uv` (macOS/Linux) or `where uv` (Windows).
+
+#### Using pip
 
 ```json
 {
   "mcpServers": {
     "lastfm": {
       "command": "lastfm-mcp",
+      "env": {
+        "LASTFM_API_KEY": "your_api_key"
+      }
+    }
+  }
+}
+```
+
+### Cursor
+
+Add to `.cursor/mcp.json` in your project root:
+
+```json
+{
+  "mcpServers": {
+    "lastfm": {
+      "command": "uv",
+      "args": ["run", "--with", "lastfm-mcp", "--python", "3.10", "lastfm-mcp"],
       "env": {
         "LASTFM_API_KEY": "your_api_key"
       }
@@ -41,27 +92,10 @@ Add to `claude_desktop_config.json`:
 ### Claude Code
 
 ```bash
-claude mcp add lastfm -- lastfm-mcp
+claude mcp add lastfm -- uv run --with lastfm-mcp --python 3.10 lastfm-mcp
 ```
 
 Make sure `LASTFM_API_KEY` is set in your environment.
-
-### Cursor
-
-Add to `.cursor/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "lastfm": {
-      "command": "lastfm-mcp",
-      "env": {
-        "LASTFM_API_KEY": "your_api_key"
-      }
-    }
-  }
-}
-```
 
 ## Tools
 
