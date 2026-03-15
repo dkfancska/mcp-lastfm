@@ -1,0 +1,24 @@
+[project]
+name = "lastfm-mcp"
+version = "0.1.0"
+description = "MCP server for the Last.fm API"
+license = "MIT"
+requires-python = ">=3.10"
+keywords = ["mcp", "lastfm", "music", "scrobble"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "mcp[cli]>=1.0.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+lastfm-mcp = "lastfm_mcp.server:main"
