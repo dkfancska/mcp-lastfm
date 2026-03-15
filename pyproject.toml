@@ -1,6 +1,6 @@
 [project]
 name = "lastfm-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "MCP server for the Last.fm API"
 license = "MIT"
 readme = "README.md"
