@@ -1,21 +1,21 @@
 # lastfm-mcp
 
-MCP-сервер для [Last.fm API](https://www.last.fm/api). Позволяет LLM-агентам получать данные о музыке: профили пользователей, историю прослушиваний, топ-чарты, поиск и метаданные артистов, альбомов и треков.
+MCP server for the [Last.fm API](https://www.last.fm/api). Enables LLM agents to access music data: user profiles, listening history, top charts, search, and artist/album/track metadata.
 
-## Требования
+## Requirements
 
 - Python 3.10+
-- [API-ключ Last.fm](https://www.last.fm/api/account/create) (бесплатно)
+- [Last.fm API key](https://www.last.fm/api/account/create) (free)
 
-## Установка
+## Installation
 
 ```bash
 pip install -e .
 ```
 
-## Настройка
+## Configuration
 
-Экспортируйте API-ключ в переменную окружения:
+Set your API key as an environment variable:
 
 ```bash
 export LASTFM_API_KEY="your_api_key"
@@ -23,7 +23,7 @@ export LASTFM_API_KEY="your_api_key"
 
 ### Claude Desktop
 
-Добавьте в `claude_desktop_config.json`:
+Add to `claude_desktop_config.json`:
 
 ```json
 {
@@ -44,81 +44,98 @@ export LASTFM_API_KEY="your_api_key"
 claude mcp add lastfm -- lastfm-mcp
 ```
 
-Не забудьте установить `LASTFM_API_KEY` в окружении.
+Make sure `LASTFM_API_KEY` is set in your environment.
 
-## Инструменты
+### Cursor
 
-### Пользователь
+Add to `.cursor/mcp.json`:
 
-| Инструмент | Описание |
+```json
+{
+  "mcpServers": {
+    "lastfm": {
+      "command": "lastfm-mcp",
+      "env": {
+        "LASTFM_API_KEY": "your_api_key"
+      }
+    }
+  }
+}
+```
+
+## Tools
+
+### User
+
+| Tool | Description |
 |---|---|
-| `lastfm_get_user_info` | Профиль пользователя: страна, скробблы, дата регистрации |
-| `lastfm_get_recent_tracks` | Недавно прослушанные треки (включая текущий) |
-| `lastfm_get_user_top_artists` | Топ артистов за период |
-| `lastfm_get_user_top_albums` | Топ альбомов за период |
-| `lastfm_get_user_top_tracks` | Топ треков за период |
-| `lastfm_get_user_loved_tracks` | Избранные треки |
+| `lastfm_get_user_info` | User profile: country, scrobble count, registration date |
+| `lastfm_get_recent_tracks` | Recently played tracks (including now playing) |
+| `lastfm_get_user_top_artists` | Top artists for a time period |
+| `lastfm_get_user_top_albums` | Top albums for a time period |
+| `lastfm_get_user_top_tracks` | Top tracks for a time period |
+| `lastfm_get_user_loved_tracks` | Loved (favorited) tracks |
 
-### Поиск
+### Search
 
-| Инструмент | Описание |
+| Tool | Description |
 |---|---|
-| `lastfm_search_artist` | Поиск артистов по имени |
-| `lastfm_search_album` | Поиск альбомов по названию |
-| `lastfm_search_track` | Поиск треков по названию |
+| `lastfm_search_artist` | Search artists by name |
+| `lastfm_search_album` | Search albums by name |
+| `lastfm_search_track` | Search tracks by name |
 
-### Артист
+### Artist
 
-| Инструмент | Описание |
+| Tool | Description |
 |---|---|
-| `lastfm_get_artist_info` | Информация об артисте: био, теги, статистика |
-| `lastfm_get_similar_artists` | Похожие артисты |
-| `lastfm_get_artist_top_tracks` | Топ треков артиста |
-| `lastfm_get_artist_top_albums` | Топ альбомов артиста |
+| `lastfm_get_artist_info` | Artist details: bio, tags, stats |
+| `lastfm_get_similar_artists` | Similar artists |
+| `lastfm_get_artist_top_tracks` | Artist's top tracks |
+| `lastfm_get_artist_top_albums` | Artist's top albums |
 
-### Альбом
+### Album
 
-| Инструмент | Описание |
+| Tool | Description |
 |---|---|
-| `lastfm_get_album_info` | Информация об альбоме: треклист, теги, описание |
+| `lastfm_get_album_info` | Album details: tracklist, tags, description |
 
-### Трек
+### Track
 
-| Инструмент | Описание |
+| Tool | Description |
 |---|---|
-| `lastfm_get_track_info` | Информация о треке: длительность, теги, статистика |
-| `lastfm_get_similar_tracks` | Похожие треки |
+| `lastfm_get_track_info` | Track details: duration, tags, stats |
+| `lastfm_get_similar_tracks` | Similar tracks |
 
-## Параметры
+## Parameters
 
-Инструменты с топ-чартами поддерживают параметр `period`:
+Top chart tools support a `period` parameter:
 
-| Значение | Период |
+| Value | Period |
 |---|---|
-| `overall` | За всё время (по умолчанию) |
-| `7day` | Неделя |
-| `1month` | Месяц |
-| `3month` | 3 месяца |
-| `6month` | 6 месяцев |
-| `12month` | Год |
+| `overall` | All time (default) |
+| `7day` | Last 7 days |
+| `1month` | Last month |
+| `3month` | Last 3 months |
+| `6month` | Last 6 months |
+| `12month` | Last year |
 
-Все списковые инструменты поддерживают пагинацию через `limit` и `page`.
+All list tools support pagination via `limit` and `page`.
 
-## Структура проекта
+## Project Structure
 
 ```
 src/lastfm_mcp/
-├── server.py       # Точка входа, инициализация FastMCP
-├── client.py       # HTTP-клиент, обработка ошибок, форматирование
-├── models.py       # Pydantic-модели и перечисления
+├── server.py       # Entry point, FastMCP initialization
+├── client.py       # HTTP client, error handling, formatting
+├── models.py       # Pydantic models and enums
 └── tools/
-    ├── user.py     # Инструменты для работы с пользователями
-    ├── search.py   # Поиск артистов, альбомов, треков
-    ├── artist.py   # Информация и топы артистов
-    ├── album.py    # Информация об альбомах
-    └── track.py    # Информация и похожие треки
+    ├── user.py     # User profile and listening tools
+    ├── search.py   # Artist, album, track search
+    ├── artist.py   # Artist info and top charts
+    ├── album.py    # Album info
+    └── track.py    # Track info and similar tracks
 ```
 
-## Лицензия
+## License
 
 MIT
